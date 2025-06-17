@@ -1,17 +1,6 @@
 import dash
 from dash import html, dcc, Input, Output, State, callback
 
-import os
-
-print(os.getcwd())
-
-chemin = f"{os.getcwd()}\\assets\\mp3"
-
-# Liste uniquement les fichiers (ignore les dossiers)
-mp3 = [f for f in os.listdir(chemin) if os.path.isfile(os.path.join(chemin, f))]
-
-
-
 app = dash.Dash(__name__)
 server = app.server
 
@@ -22,52 +11,52 @@ server = app.server
 
 quiz_data = [
     {
-        "audio": mp3[0],
+        "audio": '01_neon.mp3',
         "options": ["Un néon", "Un salon de coiffure", "Quelqu'un qui fait un tatouage", "Une interférence"],
         "answer": "Un néon"
     },
     {
-        "audio": mp3[1],
+        "audio": '02_cri_herisson.mp3',
         "options": ["Un hérisson", "Une balançoire", "Quelqu'un qui lave une vitre","Au clair de la Lune en sifflant"],
         "answer": "Un hérisson"
     },
     {
-        "audio": mp3[2],
+        "audio": '03_brosse_a_dent_electrique.mp3',
         "options": ["Une brosse à dent", "Un bourdon", "Une tondeuse à gazon", "De la bouée tractée"],
         "answer": "Une brosse à dent"
     },
     {
-        "audio": mp3[3],
+        "audio": '04_bruit_de_friture_a_la_poele.mp3',
         "options": ["Une poêle", "Quelqu'un qui fait pipi", "De la pluie", "Une fontaine feng shui"],
         "answer": "Une poêle"
     },
     {
-        "audio": mp3[4],
+        "audio": '05_roue_velo.mp3',
         "options": ["Un pivert", "Une roue", "Un métronome", "Une montre"],
         "answer": "Une roue"
     },
     {
-        "audio": mp3[5],
+        "audio": '06_chat_chafouin.mp3',
         "options": ["Un zozo jouant à un jeu de voiture", "Un chat"],
         "answer": "Un chat"
     },
     {
-        "audio": mp3[6],
+        "audio": '07_bruit_de_souris.mp3',
         "options": ["Une souris", "Une ampoule qui se dévisse", "Un papillon"],
         "answer": "Une souris"
     },
     {
-        "audio": mp3[7],
+        "audio": '08_vague_galet_etretat.mp3',
         "options": ["Un feu d'artifice", "La mer", "Un éclair", "Un tir à la carabine"],
         "answer": "La mer"
     },
     {
-        "audio": mp3[8],
+        "audio": '09_hyene_qui_rigole.mp3',
         "options": ["Une hyène", "Un ado", "Un orang-outan", "Un hibou"],
         "answer": "Une hyène"
     },
     {
-        "audio": mp3[9],
+        "audio": '10_faisan.mp3',
         "options": ["Un faisan", "Une grenouille", "Quelqu'un qui à le hoquet"],
         "answer": "Glace qui craque"
     }
