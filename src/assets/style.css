@@ -21,6 +21,7 @@ body {
     display: flex;
     height: 10vh;
     align-items: center;
+    text-align: center;
   }
 
   .titre-son {

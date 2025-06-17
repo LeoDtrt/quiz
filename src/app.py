@@ -67,12 +67,11 @@ def question(elem):
     id = int(elem['audio'].split("_")[0])
 
     layout = html.Div([
+        html.H2(f"Son N°{id} :"),
         html.Div([
-            html.H2(f"Son N°{id} :", className='titre-son'),
             html.Audio(src=f"/assets/mp3/{elem['audio']}", controls=True)
         ], className='son'),
-        dcc.RadioItems(options=elem['options'], className='radio'),
-        html.Button('Valider', className='button')
+        dcc.RadioItems(options=elem['options'], className='radio')
     ], className='container')
     
     return layout
@@ -84,6 +83,7 @@ def question(elem):
 app.layout = html.Div([
     html.H1("🎧 Quiz Sonore", style={"textAlign": "center"}),
     html.Div([question(elem) for elem in quiz_data]),
+    html.Button('Valider', className='button'),
     dcc.Store(id="user-answers", data={})
 ])
 
