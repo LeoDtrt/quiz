@@ -1,7 +1,7 @@
-import dash
-from dash import html, dcc, Input, Output, State, callback
+from dash import Dash, html, dcc, Input, Output, State, callback, ALL
+from dash.exceptions import PreventUpdate
 
-app = dash.Dash(__name__)
+app = Dash(__name__)
 server = app.server
 
 # ------------------------
@@ -67,11 +67,20 @@ def question(elem):
     id = int(elem['audio'].split("_")[0])
 
     layout = html.Div([
-        html.H2(f"Son N°{id} :"),
-        html.Div([
-            html.Audio(src=f"/assets/mp3/{elem['audio']}", controls=True)
-        ], className='son'),
-        dcc.RadioItems(options=elem['options'], className='radio')
+        html.H2(f"Son N°{id} :", className='title-son'),
+        html.Audio(src=f"/assets/mp3/{elem['audio']}", controls=True, className='son'),
+        dcc.RadioItems(
+            id={'index':id,'type':'radio'}, 
+            options=elem['options'],
+            labelStyle={
+                'display': 'flex',
+                'alignItems': 'flex-start',
+                'gap': '8px',
+                'margin': '5px 0'
+            },
+            inputStyle={'marginRight': '8px'},
+            className='radio'
+        )
     ], className='container')
     
     return layout
@@ -83,9 +92,31 @@ def question(elem):
 app.layout = html.Div([
     html.H1("🎧 Quiz Sonore", style={"textAlign": "center"}),
     html.Div([question(elem) for elem in quiz_data]),
-    html.Button('Valider', className='button'),
+    html.Button('Valider', id='btn-valide', className='button'),
+    html.Div(id='resultats', children='lala', className='container'),
     dcc.Store(id="user-answers", data={})
 ])
+
+
+
+@callback(
+    Output('resultats','children',allow_duplicate=True),
+    Input('btn-valide','n_clicks'),
+    State({'index':ALL,'type':'radio'}, 'value'),
+    prevent_initial_call=True
+)
+def update(btn, values):
+    if btn is None:
+        raise PreventUpdate
+    else:
+        print(values)
+        reponses = [v for v in values if v is not None]
+        resultats = ''
+        if len(reponses)>0:
+            resultats = ', '.join(reponses)
+            print(resultats)
+        return resultats
+
 
 
 if __name__ == '__main__':
