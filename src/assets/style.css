@@ -65,5 +65,20 @@ body {
     background-color: #e67600;
   }
   
+.liste-custom {
+    list-style: none; /* enlève les bullets par défaut */
+    padding-left: 30px;
+}
 
+.li-custom {
+  display: flex;
+  align-items: center;    /* centrage vertical */
+  margin-bottom: 10px;
+}
+
+.reponse {
+  margin-left: 10px;
+  height: 100%;
+  align-items: center;    /* centrage vertical */
+}
   

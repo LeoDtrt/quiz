@@ -58,13 +58,13 @@ quiz_data = [
     {
         "audio": '10_faisan.mp3',
         "options": ["Un faisan", "Une grenouille", "Quelqu'un qui à le hoquet"],
-        "answer": "Glace qui craque"
+        "answer": "Un faisan"
     }
 ]
 
 def question(elem):
 
-    id = int(elem['audio'].split("_")[0])
+    id = get_id(elem)
 
     layout = html.Div([
         html.H2(f"Son N°{id} :", className='title-son'),
@@ -85,6 +85,32 @@ def question(elem):
     
     return layout
 
+def get_id(elem):
+    return int(elem['audio'].split("_")[0])
+
+def space():
+    return html.Span('...', style={'color':'white'})
+
+def img(status, gif=False, w=30):
+    if gif:
+        extension = 'gif'
+    else:
+        extension = 'png'
+    return html.Img(src=f'/assets/img/{status}.{extension}', style={'width': f'{w}px', 'height':f'{w}px'})
+
+
+def build_resultat(elem, value):
+    
+    id = get_id(elem)
+    
+    res = html.Li([img('nok'), html.Span([f'Son N°{id} : La bonne réponse était {elem['answer']}'], className='reponse')], className='li-custom')
+    num = 0
+    if value is not None:
+        if value == elem['answer']:
+            res = html.Li([img('ok'), html.Span([f'Son N°{id} : {elem['answer']}'], className='reponse'), img('firework', gif=True)], className='li-custom')
+            num = 1
+    return res, num
+
 
 # ------------------------
 # Layout principal
@@ -93,14 +119,14 @@ app.layout = html.Div([
     html.H1("🎧 Quiz Sonore", style={"textAlign": "center"}),
     html.Div([question(elem) for elem in quiz_data]),
     html.Button('Valider', id='btn-valide', className='button'),
-    html.Div(id='resultats', children='lala', className='container'),
-    dcc.Store(id="user-answers", data={})
+    html.Div(id='resultats', className='container', style={'display':'none'})
 ])
 
 
 
 @callback(
-    Output('resultats','children',allow_duplicate=True),
+    Output('resultats','children', allow_duplicate=True),
+    Output('resultats','style', allow_duplicate=True),
     Input('btn-valide','n_clicks'),
     State({'index':ALL,'type':'radio'}, 'value'),
     prevent_initial_call=True
@@ -109,13 +135,27 @@ def update(btn, values):
     if btn is None:
         raise PreventUpdate
     else:
-        print(values)
-        reponses = [v for v in values if v is not None]
-        resultats = ''
-        if len(reponses)>0:
-            resultats = ', '.join(reponses)
-            print(resultats)
-        return resultats
+        n = len(quiz_data)
+        reponses = []
+        score = 0
+        for i in range(n):
+            res, num = build_resultat(quiz_data[i], values[i])
+            reponses.append(res)
+            score += num
+        
+
+        if score > 7:
+            img_score = img('firework', w=45)
+        elif score > 4:
+            img_score = img('strong', w=45)
+        else:
+            img_score = img('broke', w=50)            
+        layout = html.Div([
+            html.Div([html.H2(f"Résultats : {score}/10"), space(), img_score], style={'display':'flex'}),
+            html.Ul(reponses, className='liste-custom')
+        ])
+        style = {'display':'block'}
+        return layout, style
 
 
 
