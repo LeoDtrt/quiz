@@ -31,7 +31,7 @@ quiz_data = [
     },
     {
         "audio": '03_brosse_a_dent_electrique.mp3',
-        "options": ["Une brosse à dent", "Un bourdon", "Une tondeuse à gazon", "De la bouée tractée"],
+        "options": ["Une brosse à dent", "Quelqu'un qui fait un tatouage", "Une tondeuse à gazon", "De la bouée tractée"],
         "answer": "Une brosse à dent"
     },
     {
