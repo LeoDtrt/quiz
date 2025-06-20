@@ -21,12 +21,12 @@ teams = [
 quiz_data = [
     {
         "audio": '01_neon.mp3',
-        "options": ["Un néon", "Un salon de coiffure", "Quelqu'un qui fait un tatouage", "Une interférence"],
+        "options": [ "Une interférence", "Un néon", "Un salon de coiffure", "Quelqu'un qui fait un tatouage"],
         "answer": "Un néon"
     },
     {
         "audio": '02_cri_herisson.mp3',
-        "options": ["Un hérisson", "Une balançoire", "Quelqu'un qui lave une vitre","Au clair de la Lune en sifflant"],
+        "options": ["Une balançoire", "Quelqu'un qui lave une vitre", "Un hérisson", "Au clair de la Lune en sifflant"],
         "answer": "Un hérisson"
     },
     {
@@ -56,12 +56,12 @@ quiz_data = [
     },
     {
         "audio": '08_vague_galet_etretat.mp3',
-        "options": ["Un feu d'artifice", "La mer", "Un éclair", "Un tir à la carabine"],
+        "options": ["Un feu d'artifice", "Un éclair", "Un tir à la carabine", "La mer"],
         "answer": "La mer"
     },
     {
         "audio": '09_hyene_qui_rigole.mp3',
-        "options": ["Une hyène", "Un ado", "Un orang-outan", "Un hibou"],
+        "options": ["Un orang-outan", "Un hibou", "Une hyène", "Un ado"],
         "answer": "Une hyène"
     },
     {
@@ -71,13 +71,18 @@ quiz_data = [
     }
 ]
 
-def question(elem):
+def question(elem, cut:bool=True):
+    
+    if cut:
+        repo = 'cut'
+    else:
+        repo = 'init'
 
     id = get_id(elem)
 
     layout = html.Div([
         html.H3(f"Son N°{id} :", className='title-son'),
-        html.Audio(src=f"/assets/mp3/{elem['audio']}", controls=True, className='son'),
+        html.Audio(src=f"/assets/mp3/{repo}/{elem['audio']}", controls=True, className='son'),
         dcc.RadioItems(
             id={'index':id,'type':'radio'}, 
             options=elem['options'],
@@ -125,13 +130,13 @@ def build_resultat(elem, value):
 # Layout principal
 # ------------------------
 app.layout = html.Div([
-    html.H1("🎧 Quiz Sonore", style={"textAlign": "center"}),
+    html.H1("🎧 Quizz Sonore", style={"textAlign": "center"}),
     html.Div([
         html.H3('Sélectionner votre équipe :'),
         dcc.Dropdown(id='teams', options=teams, value=teams[0]['value'])
     ], className='container'),
     
-    html.Div([question(elem) for elem in quiz_data]),
+    html.Div([question(elem) for elem in quiz_data], id='layout-quizz'),
     html.Button('Valider', id='btn-open', className='button'),
     html.Div(id='resultats', className='container', style={'display':'none'}),
     
@@ -164,13 +169,15 @@ app.layout = html.Div([
 @callback(
     Output('resultats','children', allow_duplicate=True),
     Output('resultats','style', allow_duplicate=True),
+    Output('layout-quizz', 'children', allow_duplicate=True),
     Input('btn-ok', 'n_clicks'),
     State('input-mdp', 'value'),
     State('teams', 'value'),
     State({'index':ALL,'type':'radio'}, 'value'),
+    State('layout-quizz', 'children'),
     prevent_initial_call=True
 )
-def update(btn, input_mdp, actual_mdp, values):
+def update(btn, input_mdp, actual_mdp, values, layout_quizz):
     if btn is None:
         raise PreventUpdate
     else:
@@ -195,7 +202,10 @@ def update(btn, input_mdp, actual_mdp, values):
                 html.Ul(reponses, className='liste-custom')
             ])
             style = {'display':'block'}
-            return layout, style
+            
+            layout_quizz = [question(elem, cut=False) for elem in quiz_data]
+            
+            return layout, style, layout_quizz
         else:
             raise PreventUpdate
 
